@@ -16,8 +16,11 @@ x = 100
 
 #importing images
 #importing player img
-player_surface = pygame.image.load(join("images", "baseship11.png")).convert_alpha()
+player_surface = pygame.image.load(join("images", "ship.png")).convert_alpha()
 player_rect = player_surface.get_rect(center = (window_width/2, window_height/1.2))
+#importing laser img
+laser_surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
+laser_rect = laser_surface.get_rect(center = (window_width/1.05, window_height/1.1) )
 #importing meteor img
 meteor_surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
 meteor_rect = meteor_surface.get_rect(center = (window_width/2, window_height/2))
@@ -31,12 +34,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                player_rect.right += 10
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                player_rect.left -= 10
     
     
 
@@ -46,7 +43,7 @@ while running:
         display.blit(star_surface, pos)
 
     display.blit(meteor_surface, meteor_rect)
-
+    display.blit(laser_surface, laser_rect)
     display.blit(player_surface, player_rect)
 
     pygame.display.update()
