@@ -10,12 +10,18 @@ display = pygame.display.set_mode((window_width, window_height))
 running = True
 
 #creating the player surface
-surface= pygame.Surface((100,200))
+surface= pygame.Surface((100, 200))
 surface.fill("red")
 x = 100
 
 #importing images
-player_surface = pygame.image.load(join("images", "starship.jpeg")).convert()
+#importing player img
+player_surface = pygame.image.load(join("images", "baseship11.png")).convert_alpha()
+player_rect = player_surface.get_rect(center = (window_width/2, window_height/1.2))
+#importing meteor img
+meteor_surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
+meteor_rect = meteor_surface.get_rect(center = (window_width/2, window_height/2))
+#importing stars img
 star_surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
 star_potisions =[(randint(0, window_width), randint(0, window_height)) for i in range(20)]
 
@@ -25,17 +31,24 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                player_rect.right += 10
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                player_rect.left -= 10
     
     
-
 
     #draw the game
     display.fill("darkblue")
     for pos in star_potisions:
         display.blit(star_surface, pos)
-    x += 0.1
-    display.blit(player_surface, (x,700))
-    
+
+    display.blit(meteor_surface, meteor_rect)
+
+    display.blit(player_surface, player_rect)
+
     pygame.display.update()
 
 pygame.quit()
