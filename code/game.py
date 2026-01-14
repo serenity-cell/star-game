@@ -16,7 +16,7 @@ x = 100
 
 #importing images
 player_surface = pygame.image.load(join("images", "ship.png")).convert_alpha()
-player_rect = player_surface.get_frect(center = (window_width/2, window_height/2))
+player_rect = player_surface.get_frect(center = (window_width/2, window_height/1.2))
 player_direction = pygame.math.Vector2
 #player_surface= pygame.transform.scale(player_surface, (100, 200))
 player_speed = 300 
@@ -30,24 +30,6 @@ meteor_rect = meteor_surface.get_frect(center = (window_width/2, window_height/1
 star_surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
 star_potisions =[(randint(0, window_width), randint(0, window_height)) for i in range(20)]
 
-
-"""def player_movement(window_width, player_rect):
-    keys = pygame.key.get_pressed()
-    if player_rect.right < window_width and player_rect.left > 0:
-        if keys[pygame.K_LEFT]:
-            player_rect.left -= 5
-            print("going left")
-
-        elif keys[pygame.K_RIGHT]:
-            player_rect.left +=  5
-            print("going right")
-            
-    elif player_rect.right < window_width:
-        player_rect.left += 5
-    
-    elif player_rect.left > 0:
-        player_rect.left -= 5  """
-
 #player movement like a dvd player 
 dir_x, dir_y = 1 , 1
 def dvd_bounce():
@@ -59,7 +41,7 @@ def dvd_bounce():
     elif player_rect.top < 0 or player_rect.bottom > window_height:      
         player_rect.bottom
         player_rect.top
-         
+        
         dir_y = dir_y * -1
         player_rect.center += player_direction(dir_x, dir_y) * player_speed * dt
 
@@ -90,7 +72,6 @@ while running:
     display.blit(laser_surface, laser_rect)
 
     #player moevement
-    player_surface.fill("orange")
     display.blit(player_surface, player_rect)
     dvd_bounce()
 
