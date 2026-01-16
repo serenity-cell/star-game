@@ -18,7 +18,7 @@ x = 100
 player_surface = pygame.image.load(join("images", "ship.png")).convert_alpha()
 player_rect = player_surface.get_frect(center = (window_width/2, window_height/1.2))
 player_direction = pygame.math.Vector2
-#player_surface= pygame.transform.scale(player_surface, (100, 200))
+
 player_speed = 300 
 
 laser_surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
@@ -31,25 +31,15 @@ star_surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
 star_potisions =[(randint(0, window_width), randint(0, window_height)) for i in range(20)]
 
 #player movement like a dvd player 
-dir_x, dir_y = 1 , 1
-def dvd_bounce():
-    global dir_x
-    global dir_y 
-    if player_rect.right < window_width and player_rect.left > 0 and player_rect.top > 0 and player_rect.bottom < window_height:
-        player_rect.center += player_direction(dir_x, dir_y) * player_speed * dt
-
-    elif player_rect.top < 0 or player_rect.bottom > window_height:      
-        player_rect.bottom
-        player_rect.top
-        
-        dir_y = dir_y * -1
-        player_rect.center += player_direction(dir_x, dir_y) * player_speed * dt
+dir_x, dir_y = 1.5 , 1.5
+def dvd_bounce(func_x , func_y):
+    if player_rect.top < 0 or player_rect.bottom > window_height:      
+        func_y = func_y * -1
 
     elif player_rect.right > window_width or player_rect.left < 0:
-        player_rect.left
-        player_rect.right 
-        dir_x = dir_x * -1
-        player_rect.center += player_direction(dir_x , dir_y) * player_speed * dt
+        func_x = func_x * -1
+
+    return func_x, func_y
         
 
 #-- MAIN LOOP --
@@ -73,7 +63,8 @@ while running:
 
     #player moevement
     display.blit(player_surface, player_rect)
-    dvd_bounce()
+    dir_x,dir_y = dvd_bounce(dir_x, dir_y)
+    player_rect.center += player_direction(dir_x, dir_y) * player_speed * dt
 
     pygame.display.update()
 
