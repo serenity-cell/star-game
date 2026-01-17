@@ -11,13 +11,19 @@ class Player(pygame.sprite.Sprite):
     
     def update(self, dt):
         self.direction = pygame.math.Vector2()
-        self.speed = 300 
+        self.speed = 500
         keys = pygame.key.get_pressed()
         self.direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
         self.direction.x= int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
         self.direction = self.direction.normalize() if self.direction else self.direction
+        if self.rect.top <= 0:
+            self.rect.top += 10
+        elif self.rect.bottom >= window_height:
+            self.rect.bottom -= 10
+        """elif self.rect.left <= 0 or self.rect.right >= window_width:
+            self.direction.x *= -1"""
         self.rect.center += self.direction * self.speed * dt
-
+        
         if pygame.key.get_just_pressed()[pygame.K_SPACE]:
             print("fire laser")
     
@@ -50,13 +56,11 @@ class Meteor(pygame.sprite.Sprite):
         pass
 
 class Star(pygame.sprite.Sprite):
-    def __init__(self, groups):
+    def __init__(self, groups, surf):
         super().__init__(groups)
-        self.image: pygame.Surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
-        self.rect: pygame.FRect = self.image.get_frect(topleft=(randint(0, window_width), randint(0, window_height)))
+        self.image = surf
+        self.rect = pygame.FRect = self.image.get_frect(center=(randint(0, window_width), randint(0, window_height)))
     
-    def update(self, dt):
-        pass
         
 #general setup up layer_surface
 pygame.init()
@@ -72,10 +76,10 @@ x = 100
 #grouping sprites
 
 all_sprites = pygame.sprite.Group()
+star_surf = pygame.Surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
+for i in range(20):
+    star = Star(all_sprites, star_surf)
 
-positions =[(randint(0, window_width), randint(0, window_height)) for i in range(20)]
-for pos in positions:
-    star = Star(all_sprites)
 meteor = Meteor(all_sprites)
 laser = Laser(all_sprites)
 player =  Player(all_sprites)
