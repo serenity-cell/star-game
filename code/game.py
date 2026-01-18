@@ -20,8 +20,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.top += 10
         elif self.rect.bottom >= window_height:
             self.rect.bottom -= 10
-        """elif self.rect.left <= 0 or self.rect.right >= window_width:
-            self.direction.x *= -1"""
+        elif self.rect.left <= 0:
+            self.rect.left += 15
+        elif self.rect.right >= window_width:
+           self.rect.right -= 15
         self.rect.center += self.direction * self.speed * dt
         
         if pygame.key.get_just_pressed()[pygame.K_SPACE]:
