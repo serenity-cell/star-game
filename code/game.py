@@ -29,17 +29,18 @@ class Player(pygame.sprite.Sprite):
         self.direction = self.direction.normalize() if self.direction else self.direction
 
         # window restriction
+        """
         if self.rect.top <= 0 or self.rect.bottom >= window_height:
             self.direction.y = int(keys[pygame.K_UP]) - int(keys[pygame.K_DOWN])
         elif self.rect.left <= 0 or self.rect.right >= window_width:
-            self.direction.x= int(keys[pygame.K_LEFT]) - int(keys[pygame.K_RIGHT])
-
+            self.direction.x= int(keys[pygame.K_LEFT]) - int(keys[pygame.K_RIGHT]) 
+        """
         
         self.rect.center += self.direction * self.speed * dt
 
         #laser shot
         if pygame.key.get_just_pressed()[pygame.K_SPACE] and self.can_shoot:
-            print("fire laser")
+            Laser(self.rect.midbottom, laser_surf, all_sprites)
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
         
@@ -57,21 +58,27 @@ class Player(pygame.sprite.Sprite):
         return func_x, func_y
     
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, groups):
+    def __init__(self, pos, surf, groups):
         super().__init__(groups)
-        self.image: pygame.Surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
-        self.rect: pygame.FRect = self.image.get_frect(center = (window_width/1.05, window_height/1.1) )
-    
-    #def update(self, dt):
-
-class Meteor(pygame.sprite.Sprite):
-    def __init__(self, groups):
-        super().__init__(groups)
-        self.image: pygame.Surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
-        self.rect: pygame.FRect = self.image.get_frect(center = (window_width/2, window_height/1))
+        self.image = surf
+        self.rect = self.image.get_frect(midbottom = pos)
     
     def update(self, dt):
-        pass
+        self.rect.centery -= 400 * dt # type: ignore
+        if self.rect.bottom < 0: # type: ignore
+            self.kill()
+
+class Meteor(pygame.sprite.Sprite):
+    def __init__(self, surf, groups):
+        super().__init__(groups)
+        self.image= surf
+        self.rect= self.image.get_frect()
+    
+    def update(self, dt):
+        self.rect.centery += 100 * dt #type: ignore
+        
+        if self.rect.top > window_height: #type: ignore
+            self.kill()
 
 class Star(pygame.sprite.Sprite):
     def __init__(self, groups, surf):
@@ -98,13 +105,16 @@ star_surf = pygame.Surface = pygame.image.load(join("images", "stars.png")).conv
 for i in range(20):
     star = Star(all_sprites, star_surf)
 
-meteor = Meteor(all_sprites)
-laser = Laser(all_sprites)
+laser_surf = pygame.Surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
+meteor_surf= pygame.Surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
+
 player =  Player(all_sprites)
+
 
 #meteor event
 meteor_event = pygame.event.custom_type()
 pygame.time.set_timer(meteor_event, 500)
+
 #-- MAIN LOOP --
 while running:
     #dynamic fps handling
@@ -115,7 +125,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == meteor_event: 
-            print('create meteor')
+            meteor = Meteor(meteor_surf, all_sprites)
+            
+
     
     all_sprites.update(dt)
 
