@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
 
         #laser shot
         if pygame.key.get_just_pressed()[pygame.K_SPACE] and self.can_shoot:
-            Laser(self.rect.midbottom, laser_surf, all_sprites)
+            Laser(self.rect.midbottom, laser_surf, (all_sprites, laser_sprites))
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
         
@@ -64,18 +64,18 @@ class Laser(pygame.sprite.Sprite):
     
     def update(self, dt):
         self.rect.centery -= 400 * dt # type: ignore
-        if self.rect.bottom < 300: # type: ignore
+        if self.rect.bottom < 0: # type: ignore
             self.kill()
 
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, surf, pos, groups):
         super().__init__(groups)
         self.image = surf
-        self.rect = self.image.get_frect(center=pos)
+        self.rect= self.image.get_frect(center=pos)
         self.spawned = pygame.time.get_ticks()
         self.lifetime = 4000
         self.direction = pygame.Vector2(uniform(-0.5, 0.5), 1)
-        self.speed = randint(100, 400)
+        self.speed = randint(400, 500)
 
             
     def update(self, dt):
@@ -107,10 +107,13 @@ meteor_surf= pygame.Surface = pygame.image.load(join("images", "meteor.png")).co
 
 
 all_sprites = pygame.sprite.Group()
+laser_sprites= pygame.sprite.Group()
+meteor_sprites= pygame.sprite.Group()
+
+
 for i in range(20):
     star = Star(all_sprites, star_surf)
 player =  Player(all_sprites)
-
 
 #meteor event
 meteor_event = pygame.event.custom_type()
@@ -127,7 +130,7 @@ while running:
             running = False
         if event.type == meteor_event: 
             x, y= randint(0, window_width), -80
-            meteor = Meteor(meteor_surf, (x, y), all_sprites)
+            meteor = Meteor(meteor_surf, (x, y),(all_sprites, meteor_sprites))
             
             
 
@@ -137,6 +140,10 @@ while running:
     #draw the game
     display.fill("darkblue")
     all_sprites.draw(display)
+
+    #collision check
+    pygame.sprite.groupcollide(laser_sprites, meteor_sprites, True, True)
+    
 
     pygame.display.update()
 
