@@ -109,8 +109,22 @@ class Star(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = surf
         self.rect = pygame.FRect = self.image.get_frect(center=(randint(0, window_width), randint(0, window_height)))
-        
-    
+
+class Animated_explosion(pygame.sprite.Sprite):
+    def __init__(self, frames, pos, groups):
+        super().__init__(groups)
+        self.frames = frames
+        self.frames_index = 0
+        self.image = self.frames[self.frames_index]
+        self.rect = self.image.get_frect(center= pos)
+
+    def update( self, dt):
+        self.frames_index += 5 * dt
+        if self.frames_index < len(self.frames):
+            self.image = self.frames[int(self.frames_index)]
+        else: 
+            self.kill()
+
 def collisions():
 
     #--closes game upon player collision--
@@ -124,6 +138,9 @@ def collisions():
         collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True, lambda a,b:pygame.sprite.collide_mask(a,b) is not None)
         if collided_sprites:
             laser.kill()
+            Animated_explosion(explosion_frames, laser.rect.midtop, all_sprites)
+
+        
 
 
 def display_score():
@@ -148,7 +165,7 @@ star_surf = pygame.Surface = pygame.image.load(join("images", "stars.png")).conv
 laser_surf = pygame.Surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
 meteor_surf= pygame.Surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
 font = pygame.font.Font(join("images", "Daydream.otf"), size = 50)
-
+explosion_frames = [pygame.image.load(join("images", "explosions", f"{i}.png")).convert_alpha() for i in range(1)] 
 
 all_sprites = pygame.sprite.Group()
 laser_sprites= pygame.sprite.Group()
