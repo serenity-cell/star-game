@@ -25,8 +25,8 @@ class Player(pygame.sprite.Sprite):
 
         #--player movement--
         keys = pygame.key.get_pressed()
-        self.direction.y = int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])
-        self.direction.x= int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])
+        self.direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
+        self.direction.x= int(keys[pygame.K_d]) - int(keys[pygame.K_a])
         self.direction = self.direction.normalize() if self.direction else self.direction
 
         # --window boundaries--
@@ -68,7 +68,7 @@ class Laser(pygame.sprite.Sprite):
         self.rect = self.image.get_frect(midbottom = pos)
     
     def update(self, dt):
-        self.rect.centery -= 600 * dt # type: ignore
+        self.rect.centery -= 1000 * dt # type: ignore
         if self.rect.bottom < 0: # type: ignore
             self.kill()
 
@@ -98,6 +98,7 @@ class Star(pygame.sprite.Sprite):
         self.rect = pygame.FRect = self.image.get_frect(center=(randint(0, window_width), randint(0, window_height)))
     
 def collisions():
+
     #--closes game upon player collision--
     player_collision = pygame.sprite.spritecollide(player, meteor_sprites, True)
     if player_collision:
@@ -109,7 +110,14 @@ def collisions():
         collided_sprites = pygame.sprite.spritecollide(laser, meteor_sprites, True)
         if collided_sprites:
             laser.kill()
-        
+
+
+def display_score():
+      current_time = pygame.time.get_ticks() / 1000
+      text_surf = font.render(str(current_time), True, ( 230,230,230))
+      text_rect = text_surf.get_frect(midbottom = (window_width / 2, window_height - 20))
+      display.blit(text_surf, text_rect)
+
 #--general setup up layer_surface--
 pygame.init()
 window_width, window_height = 1800, 1200
@@ -124,7 +132,8 @@ running = True
 star_surf = pygame.Surface = pygame.image.load(join("images", "stars.png")).convert_alpha()
 laser_surf = pygame.Surface = pygame.image.load(join("images", "laser.png")).convert_alpha()
 meteor_surf= pygame.Surface = pygame.image.load(join("images", "meteor.png")).convert_alpha()
-font = pygame.font.Font(None, size = 20)
+font = pygame.font.Font(join("images", "Daydream.otf"), size = 50)
+
 
 all_sprites = pygame.sprite.Group()
 laser_sprites= pygame.sprite.Group()
@@ -161,9 +170,9 @@ while running:
     collisions()
 
     #--draw the game--
-    display.fill("darkblue")
+    display.fill("#3a2e3f")
     all_sprites.draw(display)
-
+    display_score()
     pygame.display.update()
 
 pygame.quit()
